@@ -31,7 +31,7 @@ This is a full-stack library management system built with Ruby on Rails API back
 ### Prerequisites
 
 - Ruby 3.4.6
-- Node.js and npm
+- Node.js (v16+) and npm
 - PostgreSQL
 
 ### Backend Setup
@@ -59,7 +59,7 @@ This is a full-stack library management system built with Ruby on Rails API back
 
 6. Start Rails server:
    ```
-   rails server
+   rails server -p 3000
    ```
    The API will be available at http://localhost:3000
 
@@ -69,15 +69,36 @@ This is a full-stack library management system built with Ruby on Rails API back
    ```
    cd frontend
    ```
-2. Install additional dependencies:
+2. Install dependencies:
    ```
-   npm install react-router-dom axios
+   npm install
    ```
 3. Start the development server:
    ```
    npm start
    ```
    The frontend will be available at http://localhost:3001
+
+## Localhost Testing
+
+To test the full system locally:
+
+1. Ensure both backend (Rails on port 3000) and frontend (React on 3001) are running as per setup.
+2. Open http://localhost:3001 in your browser.
+3. Login with demo credentials (librarian or member).
+4. Test flows:
+   - Librarian: Add/edit/delete books via BookForm, view dashboard stats/overdues.
+   - Member: Search/browse books, borrow available ones, check personal dashboard.
+   - Integration: Borrow a book → Verify availability updates in backend (check via API or console).
+5. API Testing: Use curl/Postman for endpoints, e.g.:
+   ```
+   curl -X POST http://localhost:3000/api/v1/auth/sign_in \
+     -H "Content-Type: application/json" \
+     -d '{"user":{"email":"librarian@example.com","password":"password"}}'
+   ```
+6. Run tests: Backend `bundle exec rspec`; Frontend `cd frontend && npm test`.
+
+If CORS errors, verify config/initializers/cors.rb allows localhost:3001.
 
 ## API Endpoints
 
@@ -103,6 +124,88 @@ This is a full-stack library management system built with Ruby on Rails API back
 ### Dashboard
 
 - GET /api/v1/dashboards (dashboard data based on user role)
+
+## Debugging
+
+### Backend (Rails)
+
+1. View logs: `tail -f log/development.log`.
+2. Rails console: `rails c` – Test models/queries, e.g., `Book.all`.
+3. Debug gem: Add `debugger` in code, run server, interact via console.
+4. DB queries: `rails dbconsole` or enable logging in console.
+5. Tests: `rspec spec/`; Security: `bin/brakeman`.
+
+### Frontend (React)
+
+1. Browser DevTools: Console for errors, Network for API calls.
+2. React DevTools extension: Inspect components/props/state.
+3. Logging: Add `console.log` in hooks/components.
+4. VS Code debugger: Breakpoints in .tsx files.
+5. Tests: `npm test`.
+
+Common: Check proxy in package.json for API calls; verify JWT tokens.
+
+## Style Improvements Guide
+
+Current UI is basic; enhance for better UX.
+
+### Identification
+
+- Inspect components: Plain lists/forms in BookList, Dashboard, Login.
+- Audit: Use Lighthouse for accessibility/performance; test responsiveness.
+- Issues: No themes, grids, icons; default browser styles.
+
+### Application
+
+1. Add global theme in index.css (CSS variables for colors/fonts).
+2. Per-component: Use Tailwind (install via npm) or custom CSS modules.
+   - Login: Card layout with padding, styled inputs/buttons.
+   - BookList: Grid cards for books, flex search form.
+   - Dashboard: Stat cards, tables for lists; color-code overdues.
+3. Tools: Tailwind IntelliSense, Prettier; add react-icons.
+4. Test: Hot reload, mobile emulation.
+
+Backup with git before changes.
+
+## Deployment
+
+Uses Kamal for Docker-based deployment to VPS.
+
+### Prerequisites
+
+- VPS (e.g., DigitalOcean) with Docker, SSH.
+- Domain pointed to VPS IP.
+- Docker Hub account.
+
+### Configuration
+
+Edit config/deploy.yml:
+
+- image: your-docker/library_management
+- servers: VPS IP
+- proxy host: yourdomain.com
+- registry username/password (use secrets).
+
+Create .kamal/secrets:
+
+- KAMAL_REGISTRY_PASSWORD=token
+- LIBRARY_MANAGEMENT_DATABASE_PASSWORD=pass
+- RAILS_MASTER_KEY=from credentials
+
+External DB recommended (e.g., RDS).
+
+### Steps
+
+1. bundle install (for kamal).
+2. kamal init/setup (provisions server).
+3. cd frontend && npm run build (for static assets).
+4. kamal deploy (builds/pushes image, deploys).
+5. kamal app exec bin/rails db:migrate db:seed (if needed).
+6. Access: https://yourdomain.com
+
+Alternatives: Heroku (git push), Render (Docker).
+
+Logs: kamal logs; Rollback: kamal rollback.
 
 ## Architecture Overview
 
@@ -181,7 +284,6 @@ class Api::V1::TasksController < ApplicationController
       render json: { errors: task.errors }, status: :unprocessable_entity
     end
   end
-
   # ... other actions
 end
 ```
@@ -256,6 +358,7 @@ App
    - View dashboard based on role
 
 3. **End-to-End:**
+
    - Librarian adds a book
    - Member searches and borrows the book
    - Librarian views overdue items
