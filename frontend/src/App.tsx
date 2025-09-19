@@ -1,42 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import BookList from './components/BookList';
-import BookForm from './components/BookForm';
-import Borrowings from './components/Borrowings';
-
-function AppContent() {
-  const { user, token } = useAuth();
-
-  return (
-    <div className="App">
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        {token ? (
-          <>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/books" element={<BookList />} />
-            <Route path="/books/new" element={<BookForm />} />
-            <Route path="/borrowings" element={<Borrowings />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </>
-        ) : (
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        )}
-      </Routes>
-    </div>
-  );
-}
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-gray-900">Library Management</h1>
+        </div>
+      </header>
+      <main>
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="px-4 py-6 sm:px-0">
+            <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
+              <p className="text-gray-500">Welcome to the Library Management Frontend with Tailwind CSS v3</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
 

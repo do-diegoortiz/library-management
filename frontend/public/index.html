@@ -2,42 +2,77 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div id="app">
+      <!-- Login Section -->
+      <section id="login" class="view">
+        <h1>Login</h1>
+        <form id="loginForm">
+          <label for="email">Email:</label>
+          <input type="email" id="email" required />
+          <label for="password">Password:</label>
+          <input type="password" id="password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="loginError" class="error"></p>
+      </section>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="view hidden">
+        <header>
+          <h1>Dashboard</h1>
+          <button id="logout">Logout</button>
+        </header>
+        <div id="dashboardContent">
+          <!-- Stats will be populated here -->
+        </div>
+        <nav>
+          <button id="booksBtn">Books</button>
+          <button id="borrowingsBtn">Borrowings</button>
+        </nav>
+      </section>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+      <!-- Books Section -->
+      <section id="books" class="view hidden">
+        <h1>Books</h1>
+        <button id="addBookBtn">Add New Book</button>
+        <div id="booksList">
+          <!-- Books will be populated here -->
+        </div>
+        <!-- Add Book Form -->
+        <div id="addBookForm" class="form hidden">
+          <h2>Add Book</h2>
+          <form id="bookForm">
+            <label for="title">Title:</label>
+            <input type="text" id="title" required />
+            <label for="author">Author:</label>
+            <input type="text" id="author" required />
+            <label for="isbn">ISBN:</label>
+            <input type="text" id="isbn" required />
+            <label for="availableCopies">Available Copies:</label>
+            <input type="number" id="availableCopies" min="0" required />
+            <button type="submit">Add Book</button>
+            <button type="button" id="cancelAdd">Cancel</button>
+          </form>
+        </div>
+        <p id="booksError" class="error"></p>
+      </section>
+
+      <!-- Borrowings Section -->
+      <section id="borrowings" class="view hidden">
+        <h1>Borrowings</h1>
+        <div id="borrowingsList">
+          <!-- Borrowings will be populated here -->
+        </div>
+        <p id="borrowingsError" class="error"></p>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
   </body>
 </html>
