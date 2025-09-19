@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get "auth/login"
       resources :dashboards, only: [ :index ]
       resources :borrowings, only: [ :index, :show, :create, :update ]
       resources :books, only: [ :index, :show, :create, :update, :destroy ]
