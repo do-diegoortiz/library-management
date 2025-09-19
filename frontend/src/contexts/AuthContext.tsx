@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('http://localhost:3000/api/v1/auth/login', { user: { email, password } });
+    const response = await axios.post('http://localhost:3000/api/v1/auth/sign_in', { user: { email, password } });
     const data = response.data as LoginResponse;
     const { token, user } = data;
     localStorage.setItem('token', token);

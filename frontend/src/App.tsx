@@ -10,19 +10,21 @@ import Borrowings from './components/Borrowings';
 function AppContent() {
   const { user, token } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
   return (
     <div className="App">
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/books" element={<BookList />} />
-        <Route path="/books/new" element={<BookForm />} />
-        <Route path="/borrowings" element={<Borrowings />} />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {token ? (
+          <>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/books" element={<BookList />} />
+            <Route path="/books/new" element={<BookForm />} />
+            <Route path="/borrowings" element={<Borrowings />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </>
+        ) : (
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        )}
       </Routes>
     </div>
   );
