@@ -1,7 +1,7 @@
+
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Books", type: :request do
-  let(:librarian) { create(:user, role: :librarian) }
   let(:member) { create(:user, role: :member) }
   let(:book) { create(:book) }
 
@@ -95,7 +95,13 @@ RSpec.describe "Api::V1::Books", type: :request do
   end
 
   describe "PUT /api/v1/books/:id" do
-    let(:update_params) { { book: { total_copies: 10 } } }
+    let(:update_params) do
+      {
+        book: {
+          total_copies: 10
+        }
+      }
+    end
 
     context 'as librarian' do
       it 'updates book successfully' do
@@ -127,9 +133,5 @@ RSpec.describe "Api::V1::Books", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
-  end
-
-  def auth_headers(user)
-    { 'Authorization' => "Bearer #{user.generate_jwt}" }
   end
 end
