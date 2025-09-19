@@ -7,13 +7,16 @@ class User < ApplicationRecord
 
   enum :role, { member: 0, librarian: 1 }, default: :member
 
+  has_many :borrowings, dependent: :destroy
+  has_many :books, through: :borrowings
+
   validates :role, presence: true
 
   def librarian?
-    role == 'librarian'
+    role == "librarian"
   end
 
   def member?
-    role == 'member'
+    role == "member"
   end
 end

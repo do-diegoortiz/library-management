@@ -12,7 +12,7 @@ class Borrowing < ApplicationRecord
   before_validation :set_due_date, if: :borrow_date
 
   after_create :decrement_available_copies
-  after_update :increment_available_copies, if: :returned_changed? && returned?
+  after_update :increment_available_copies, if: Proc.new { |record| record.returned_changed? && record.returned? }
 
   scope :overdue, -> { where("due_date < ?", Date.today).where(returned: false) }
   scope :borrowed_by_user, ->(user) { where(user: user).where(returned: false) }
