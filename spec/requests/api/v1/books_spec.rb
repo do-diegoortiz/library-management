@@ -1,9 +1,14 @@
-
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Books", type: :request do
+  let(:librarian) { create(:user, role: :librarian) }
   let(:member) { create(:user, role: :member) }
   let(:book) { create(:book) }
+
+  def auth_headers(user)
+    token = JsonWebToken.encode(user_id: user.id)
+    { 'Authorization' => "Bearer #{token}" }
+  end
 
   describe "GET /api/v1/books" do
     context 'without authentication' do
