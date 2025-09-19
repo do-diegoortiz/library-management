@@ -4,75 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library Management</title>
-    <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <div id="app">
-      <!-- Login Section -->
-      <section id="login" class="view">
-        <h1>Login</h1>
-        <form id="loginForm">
-          <label for="email">Email:</label>
-          <input type="email" id="email" required />
-          <label for="password">Password:</label>
-          <input type="password" id="password" required />
-          <button type="submit">Login</button>
-        </form>
-        <p id="loginError" class="error"></p>
-      </section>
-
-      <!-- Dashboard Section -->
-      <section id="dashboard" class="view hidden">
-        <header>
-          <h1>Dashboard</h1>
-          <button id="logout">Logout</button>
-        </header>
-        <div id="dashboardContent">
-          <!-- Stats will be populated here -->
-        </div>
-        <nav>
-          <button id="booksBtn">Books</button>
-          <button id="borrowingsBtn">Borrowings</button>
-        </nav>
-      </section>
-
-      <!-- Books Section -->
-      <section id="books" class="view hidden">
-        <h1>Books</h1>
-        <button id="addBookBtn">Add New Book</button>
-        <div id="booksList">
-          <!-- Books will be populated here -->
-        </div>
-        <!-- Add Book Form -->
-        <div id="addBookForm" class="form hidden">
-          <h2>Add Book</h2>
-          <form id="bookForm">
-            <label for="title">Title:</label>
-            <input type="text" id="title" required />
-            <label for="author">Author:</label>
-            <input type="text" id="author" required />
-            <label for="isbn">ISBN:</label>
-            <input type="text" id="isbn" required />
-            <label for="availableCopies">Available Copies:</label>
-            <input type="number" id="availableCopies" min="0" required />
-            <button type="submit">Add Book</button>
-            <button type="button" id="cancelAdd">Cancel</button>
-          </form>
-        </div>
-        <p id="booksError" class="error"></p>
-      </section>
-
-      <!-- Borrowings Section -->
-      <section id="borrowings" class="view hidden">
-        <h1>Borrowings</h1>
-        <div id="borrowingsList">
-          <!-- Borrowings will be populated here -->
-        </div>
-        <p id="borrowingsError" class="error"></p>
-      </section>
-    </div>
-
-    <script src="app.js"></script>
+    <div id="root"></div>
   </body>
 </html>
