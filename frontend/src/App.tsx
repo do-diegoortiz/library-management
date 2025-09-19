@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Login from './components/Login';
+import Signup from './components/Signup';
 import BookList from './components/BookList';
 import Borrowings from './components/Borrowings';
 import Dashboard from './components/Dashboard';
@@ -8,9 +9,12 @@ import { useAuth } from './contexts/AuthContext';
 function App() {
   const { user, loading, logout } = useAuth();
   const [currentView, setCurrentView] = useState<'dashboard' | 'books' | 'borrowings'>('dashboard');
+  const [authView, setAuthView] = useState<'login' | 'signup'>('login');
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>;
-  if (!user) return <Login />;
+  if (!user) {
+    return authView === 'login' ? <Login onSwitchToSignup={() => setAuthView('signup')} /> : <Signup onSwitchToLogin={() => setAuthView('login')} />;
+  }
 
   const renderView = () => {
     switch (currentView) {

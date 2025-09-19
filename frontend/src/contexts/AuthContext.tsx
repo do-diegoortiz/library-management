@@ -13,6 +13,7 @@ interface AuthContextType {
   loading: boolean;
   isLibrarian: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, passwordConfirmation: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -85,6 +86,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signup = async (email: string, password: string, passwordConfirmation: string) => {
+    setLoading(true);
+    try {
+      const data = await apiCall('/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify({ user: { email, password, password_confirmation: passwordConfirmation } }),
+      });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setToken(data.token);
+      setUser(data.user);
+    } catch (error) {
+      console.error('Signup failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -95,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isLibrarian = user?.role === 'librarian' || false;
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, isLibrarian, login, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, isLibrarian, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
