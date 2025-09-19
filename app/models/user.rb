@@ -5,15 +5,15 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::JTIMatcher
 
-  enum role: { member: "member", librarian: "librarian" }, _default: :member
+  enum :role, { member: 0, librarian: 1 }, default: :member
 
   validates :role, presence: true
 
   def librarian?
-    role == "librarian"
+    role == 'librarian'
   end
 
   def member?
-    role == "member"
+    role == 'member'
   end
 end
