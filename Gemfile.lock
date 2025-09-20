@@ -137,7 +137,7 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.14.1)
-    jwt (3.1.2)
+    jwt (2.10.2)
       base64
     kamal (2.7.0)
       activesupport (>= 7.0)
@@ -218,6 +218,9 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.1)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -381,9 +384,11 @@ DEPENDENCIES
   devise-jwt (~> 0.12.1)
   factory_bot_rails (~> 6.4)
   faker (~> 3.4)
+  jwt (~> 2.8)
   kamal
   pg (~> 1.1)
   puma (>= 5.0)
+  rack-cors
   rails (~> 8.0.2, >= 8.0.2.1)
   rspec-rails (~> 7.1)
   rubocop-rails-omakase

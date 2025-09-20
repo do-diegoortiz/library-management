@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import BookList from './components/BookList';
@@ -6,10 +6,61 @@ import Borrowings from './components/Borrowings';
 import Dashboard from './components/Dashboard';
 import { useAuth } from './contexts/AuthContext';
 
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  isbn: string;
+  available_copies: number;
+  genre?: string;
+  total_copies?: number;
+}
+
+const API_BASE = 'http://localhost:3000/api/v1';
+
+async function apiCall(endpoint: string, options: RequestInit = {}) {
+  const url = `${API_BASE}${endpoint}`;
+  const token = localStorage.getItem('token');
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 function App() {
   const { user, loading, logout } = useAuth();
   const [currentView, setCurrentView] = useState<'dashboard' | 'books' | 'borrowings'>('dashboard');
   const [authView, setAuthView] = useState<'login' | 'signup'>('login');
+  const [books, setBooks] = useState<Book[]>([]);
+  const [booksLoading, setBooksLoading] = useState(false);
+
+  useEffect(() => {
+    if (currentView === 'books' && user) {
+      fetchBooks();
+    }
+  }, [currentView, user]);
+
+  const fetchBooks = async () => {
+    setBooksLoading(true);
+    try {
+      const data = await apiCall('/books');
+      setBooks(data);
+    } catch (error) {
+      console.error('Failed to fetch books:', error);
+    } finally {
+      setBooksLoading(false);
+    }
+  };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>;
   if (!user) {
@@ -19,7 +70,16 @@ function App() {
   const renderView = () => {
     switch (currentView) {
       case 'books':
-        return <BookList books={[]} />;
+        return booksLoading ? (
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading books...</p>
+            </div>
+          </div>
+        ) : (
+          <BookList books={books} />
+        );
       case 'borrowings':
         return <Borrowings borrowings={[]} />;
       default:

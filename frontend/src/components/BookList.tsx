@@ -5,7 +5,7 @@ interface Book {
   title: string;
   author: string;
   isbn: string;
-  availableCopies: number;
+  available_copies: number;
 }
 
 interface BookListProps {
@@ -26,7 +26,7 @@ const BookList: React.FC<BookListProps> = ({ books }) => {
               <h3 className="text-xl font-semibold text-gray-900 mb-2">{book.title}</h3>
               <p className="text-gray-600 mb-1">Author: {book.author}</p>
               <p className="text-gray-600 mb-1">ISBN: {book.isbn}</p>
-              <p className="text-gray-600">Available Copies: {book.availableCopies}</p>
+              <p className="text-gray-600">Available Copies: {book.available_copies}</p>
             </div>
           ))}
         </div>
