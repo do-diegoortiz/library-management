@@ -18,6 +18,14 @@ interface BookFormData {
   total_copies: number;
 }
 
+interface BookFormErrors {
+  title?: string;
+  author?: string;
+  genre?: string;
+  isbn?: string;
+  total_copies?: string;
+}
+
 interface BookFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,7 +42,7 @@ const BookForm: React.FC<BookFormProps> = ({ isOpen, onClose, onSubmit, initialB
     total_copies: 1,
   });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Partial<BookFormData>>({});
+  const [errors, setErrors] = useState<BookFormErrors>({});
 
   useEffect(() => {
     if (initialBook) {
@@ -60,7 +68,7 @@ const BookForm: React.FC<BookFormProps> = ({ isOpen, onClose, onSubmit, initialB
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name as keyof BookFormData]) {
+    if (errors[name as keyof BookFormErrors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
@@ -72,10 +80,27 @@ const BookForm: React.FC<BookFormProps> = ({ isOpen, onClose, onSubmit, initialB
       await onSubmit(formData);
       onClose();
     } catch (error: any) {
-      if (error.message.includes('422')) {
-        // Assuming backend returns errors
-        setErrors({ title: 'Validation failed' }); // Placeholder
+      const errorMessage = error.message.toLowerCase();
+      const newErrors: BookFormErrors = {};
+      if (errorMessage.includes('isbn')) {
+        newErrors.isbn = 'ISBN must be unique';
       }
+      if (errorMessage.includes('title')) {
+        newErrors.title = 'Title is required';
+      }
+      if (errorMessage.includes('author')) {
+        newErrors.author = 'Author is required';
+      }
+      if (errorMessage.includes('genre')) {
+        newErrors.genre = 'Genre is invalid';
+      }
+      if (errorMessage.includes('total_copies')) {
+        newErrors.total_copies = 'Total copies must be a number >= 0';
+      }
+      if (Object.keys(newErrors).length === 0) {
+        newErrors.title = 'Validation failed'; // Fallback
+      }
+      setErrors(newErrors);
     } finally {
       setLoading(false);
     }

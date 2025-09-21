@@ -55,7 +55,16 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.errors) {
+        errorMessage = errorData.errors.join(', ');
+      }
+    } catch (e) {
+      // Ignore if can't parse
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
