@@ -46,7 +46,7 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
 }
 
 function App() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, isLibrarian } = useAuth();
   const [currentView, setCurrentView] = useState<'dashboard' | 'books' | 'borrowings'>('dashboard');
   const [authView, setAuthView] = useState<'login' | 'signup'>('login');
   const [books, setBooks] = useState<Book[]>([]);
@@ -67,10 +67,14 @@ function App() {
     }
   }, [currentView, user]);
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (search?: string, searchType?: string) => {
     setBooksLoading(true);
     try {
-      const data = await apiCall('/books');
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (searchType) params.append('search_type', searchType);
+      const url = `/books${params.toString() ? `?${params.toString()}` : ''}`;
+      const data = await apiCall(url);
       setBooks(data);
     } catch (error) {
       console.error('Failed to fetch books:', error);
@@ -98,6 +102,33 @@ function App() {
     }
   };
 
+  const createBook = async (bookData: any) => {
+    await apiCall('/books', {
+      method: 'POST',
+      body: JSON.stringify({ book: bookData }),
+    });
+    await fetchBooks(); // Refresh
+  };
+
+  const updateBook = async (id: number, bookData: any) => {
+    await apiCall(`/books/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ book: bookData }),
+    });
+    await fetchBooks(); // Refresh
+  };
+
+  const deleteBook = async (id: number) => {
+    await apiCall(`/books/${id}`, {
+      method: 'DELETE',
+    });
+    await fetchBooks(); // Refresh
+  };
+
+  const onSearchBook = (search: string, searchType: string) => {
+    fetchBooks(search, searchType);
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>;
   if (!user) {
     return authView === 'login' ? <Login onSwitchToSignup={() => setAuthView('signup')} /> : <Signup onSwitchToLogin={() => setAuthView('login')} />;
@@ -114,7 +145,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <BookList books={books} />
+          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} onSearch={onSearchBook} />
         );
       case 'borrowings':
         return borrowingsLoading ? (

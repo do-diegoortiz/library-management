@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import BookForm from './BookForm';
 
 interface Book {
   id: number;
@@ -6,17 +7,86 @@ interface Book {
   author: string;
   isbn: string;
   available_copies: number;
+  genre?: string;
 }
 
 interface BookListProps {
   books: Book[];
+  isLibrarian: boolean;
+  onCreateBook: (data: any) => Promise<void>;
+  onUpdateBook: (id: number, data: any) => Promise<void>;
+  onDeleteBook: (id: number) => Promise<void>;
+  onSearch: (search: string, searchType: string) => void;
 }
 
-const BookList: React.FC<BookListProps> = ({ books }) => {
+const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onSearch }) => {
+  const [showForm, setShowForm] = useState(false);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
+  const [search, setSearch] = useState('');
+  const [searchType, setSearchType] = useState('title');
+
+  const handleAddBook = () => {
+    setEditingBook(null);
+    setShowForm(true);
+  };
+
+  const handleEditBook = (book: Book) => {
+    setEditingBook(book);
+    setShowForm(true);
+  };
+
+  const handleDeleteBook = async (book: Book) => {
+    if (window.confirm(`Are you sure you want to delete "${book.title}"?`)) {
+      await onDeleteBook(book.id);
+    }
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    if (editingBook) {
+      await onUpdateBook(editingBook.id, data);
+    } else {
+      await onCreateBook(data);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Available Books</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">Available Books</h2>
+          {isLibrarian && (
+            <button
+              onClick={handleAddBook}
+              className="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
+            >
+              Add Book
+            </button>
+          )}
+        </div>
+        <div className="mb-6 flex space-x-4">
+          <select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="genre">Genre</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Search books..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            onClick={() => onSearch(search, searchType)}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md"
+          >
+            Search
+          </button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => (
             <div
@@ -25,8 +95,25 @@ const BookList: React.FC<BookListProps> = ({ books }) => {
             >
               <h3 className="text-xl font-semibold text-gray-900 mb-2">{book.title}</h3>
               <p className="text-gray-600 mb-1">Author: {book.author}</p>
+              <p className="text-gray-600 mb-1">Genre: {book.genre || 'N/A'}</p>
               <p className="text-gray-600 mb-1">ISBN: {book.isbn}</p>
               <p className="text-gray-600">Available Copies: {book.available_copies}</p>
+              {isLibrarian && (
+                <div className="mt-4 flex space-x-2">
+                  <button
+                    onClick={() => handleEditBook(book)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteBook(book)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -36,6 +123,12 @@ const BookList: React.FC<BookListProps> = ({ books }) => {
           </div>
         )}
       </div>
+      <BookForm
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        onSubmit={handleFormSubmit}
+        initialBook={editingBook}
+      />
     </div>
   );
 };
