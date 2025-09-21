@@ -18,6 +18,7 @@ interface Book {
 
 interface Borrowing {
   id: number;
+  book_id: number;
   bookTitle: string;
   borrowDate: string;
   returnDate?: string;
@@ -94,6 +95,7 @@ function App() {
   useEffect(() => {
     if (currentView === 'books' && user) {
       fetchBooks();
+      fetchBorrowings();
     }
   }, [currentView, user]);
 
@@ -124,6 +126,7 @@ function App() {
       const data = await apiCall('/borrowings');
       const mappedData = data.map((borrowing: any) => ({
         id: borrowing.id,
+        book_id: borrowing.book.id,
         bookTitle: borrowing.book.title,
         borrowDate: borrowing.borrow_date,
         returnDate: borrowing.returned_date,
@@ -167,6 +170,7 @@ function App() {
       body: JSON.stringify({ borrowing: { book_id: bookId, borrow_date: borrowDate } }),
     });
     await fetchBooks(); // Refresh available copies
+    await fetchBorrowings(); // Refresh user's borrowings
   };
 
   const returnBook = async (borrowingId: number) => {
@@ -198,7 +202,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} onBorrowBook={borrowBook} search={search} setSearch={setSearch} />
+          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} onBorrowBook={borrowBook} borrowings={borrowings} search={search} setSearch={setSearch} />
         );
       case 'borrowings':
         return borrowingsLoading ? (

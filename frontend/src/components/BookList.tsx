@@ -11,6 +11,15 @@ interface Book {
   genre?: string;
 }
 
+interface Borrowing {
+  id: number;
+  book_id: number;
+  bookTitle: string;
+  borrowDate: string;
+  returnDate?: string;
+  returned: boolean;
+}
+
 interface BookListProps {
   books: Book[];
   isLibrarian: boolean;
@@ -18,11 +27,12 @@ interface BookListProps {
   onUpdateBook: (id: number, data: any) => Promise<void>;
   onDeleteBook: (id: number) => Promise<void>;
   onBorrowBook: (id: number) => Promise<void>;
+  borrowings: Borrowing[];
   search: string;
   setSearch: (search: string) => void;
 }
 
-const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onBorrowBook, search, setSearch }) => {
+const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onBorrowBook, borrowings, search, setSearch }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
@@ -101,7 +111,7 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
                   </button>
                 </div>
               )}
-              {!isLibrarian && book.available_copies > 0 && (
+              {!isLibrarian && book.available_copies > 0 && !borrowings.some(b => b.book_id === book.id && !b.returned) && (
                 <div className="mt-4">
                   <button
                     onClick={() => onBorrowBook(book.id)}
