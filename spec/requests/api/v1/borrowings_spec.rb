@@ -74,7 +74,7 @@ RSpec.describe "Api::V1::Borrowings", type: :request do
       it 'returns error if book not available' do
         book.update(available_copies: 0)
         post api_v1_borrowings_path, params: valid_borrowing_params, headers: auth_headers(member)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)['errors']).to include('Book is not available')
       end
 

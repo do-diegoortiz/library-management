@@ -8,11 +8,11 @@ class Api::V1::BorrowingsController < ApplicationController
     else
       borrowings = Borrowing.borrowed_by_user(current_user)
     end
-    render json: borrowings, status: :ok
+    render json: borrowings, include: :book, status: :ok
   end
 
   def show
-    render json: @borrowing, status: :ok
+    render json: @borrowing, include: :book, status: :ok
   end
 
   def create
@@ -20,17 +20,17 @@ class Api::V1::BorrowingsController < ApplicationController
     borrowing.user = current_user
 
     if borrowing.save
-      render json: borrowing, status: :created
+      render json: borrowing, include: :book, status: :created
     else
-      render json: { errors: borrowing.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: borrowing.errors.full_messages }, status: :unprocessable_content
     end
   end
 
   def update
     if current_user.librarian? && @borrowing.update(returned: true, returned_date: Date.today)
-      render json: @borrowing, status: :ok
+      render json: @borrowing, include: :book, status: :ok
     else
-      render json: { errors: @borrowing.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @borrowing.errors.full_messages }, status: :unprocessable_content
     end
   end
 

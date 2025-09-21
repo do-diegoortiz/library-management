@@ -16,7 +16,7 @@ class Api::V1::AuthController < ApplicationController
       token = JsonWebToken.encode(user_id: user.id)
       render json: { token: token, user: user }, status: :created
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_content
     end
   end
 
