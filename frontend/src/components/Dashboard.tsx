@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-interface Borrowing {
-  id: number;
-  due_date: string;
-  book: {
-    title: string;
-  };
-}
-
-interface DashboardData {
-  total_books?: number;
-  total_borrowed?: number;
-  borrowed_books?: Borrowing[];
-  overdue_books?: Borrowing[];
-}
+import { DashboardData } from '../interfaces/DashboardInterfaces';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -50,9 +36,9 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div className="w-12 h-12 mx-auto border-b-2 rounded-full animate-spin border-primary"></div>
           <p className="mt-4 text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -67,33 +53,33 @@ const Dashboard: React.FC = () => {
     ];
 
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="min-h-screen p-6 bg-gray-50">
+        <h2 className="mb-6 text-2xl font-bold text-gray-900">Dashboard</h2>
+        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
           {stats.map((stat) => (
-            <div key={stat.name} className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-              <p className="text-gray-600 text-sm font-medium">{stat.name}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+            <div key={stat.name} className="flex flex-col items-center p-4 bg-white rounded-lg shadow">
+              <p className="text-sm font-medium text-gray-600">{stat.name}</p>
+              <p className="mt-2 text-3xl font-bold text-gray-900">{stat.value}</p>
             </div>
           ))}
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
+        <div className="p-6 bg-white rounded-lg shadow">
+          <h3 className="mb-4 text-lg font-medium text-gray-900">Recent Activity</h3>
           <p className="text-gray-500">Placeholder for recent borrowings and returns.</p>
         </div>
       </div>
     );
   } else {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">My Dashboard</h2>
+      <div className="min-h-screen p-6 bg-gray-50">
+        <h2 className="mb-6 text-2xl font-bold text-gray-900">My Dashboard</h2>
         <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Borrowed Books</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="mb-4 text-lg font-medium text-gray-900">Borrowed Books</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {dashboardData.borrowed_books?.map((borrowing) => (
-              <div key={borrowing.id} className="bg-white shadow-md rounded-lg p-6">
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">{borrowing.book?.title}</h4>
-                <p className="text-gray-600 mb-1">Due Date: {new Date(borrowing.due_date).toLocaleDateString()}</p>
+              <div key={borrowing.id} className="p-6 bg-white rounded-lg shadow-md">
+                <h4 className="mb-2 text-xl font-semibold text-gray-900">{borrowing.book?.title}</h4>
+                <p className="mb-1 text-gray-600">Due Date: {new Date(borrowing.due_date).toLocaleDateString()}</p>
               </div>
             )) || []}
           </div>
@@ -102,13 +88,13 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Overdue Books</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="mb-4 text-lg font-medium text-gray-900">Overdue Books</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {dashboardData.overdue_books?.map((borrowing) => (
-              <div key={borrowing.id} className="bg-red-50 shadow-md rounded-lg p-6 border border-red-200">
-                <h4 className="text-xl font-semibold text-red-900 mb-2">{borrowing.book?.title}</h4>
-                <p className="text-red-600 mb-1">Due Date: {new Date(borrowing.due_date).toLocaleDateString()}</p>
-                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+              <div key={borrowing.id} className="p-6 border border-red-200 rounded-lg shadow-md bg-red-50">
+                <h4 className="mb-2 text-xl font-semibold text-red-900">{borrowing.book?.title}</h4>
+                <p className="mb-1 text-red-600">Due Date: {new Date(borrowing.due_date).toLocaleDateString()}</p>
+                <span className="inline-flex px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">
                   Overdue
                 </span>
               </div>

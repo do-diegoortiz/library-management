@@ -1,33 +1,21 @@
 import React from 'react';
-
-interface Borrowing {
-  id: number;
-  bookTitle: string;
-  borrowDate: string;
-  returnDate?: string;
-  returned: boolean;
-}
-
-interface BorrowingsProps {
-  borrowings: Borrowing[];
-  isLibrarian: boolean;
-  onReturnBook: (id: number) => Promise<void>;
-}
+import { Borrowing } from '../interfaces/Borrowing';
+import { BorrowingsProps } from '../interfaces/ComponentProps';
 
 const Borrowings: React.FC<BorrowingsProps> = ({ borrowings, isLibrarian, onReturnBook }) => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">My Borrowings</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <h2 className="mb-6 text-3xl font-bold text-gray-900">My Borrowings</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {borrowings.map((borrowing) => (
             <div
               key={borrowing.id}
-              className="bg-white shadow-md rounded-lg p-6"
+              className="p-6 bg-white rounded-lg shadow-md"
             >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{borrowing.bookTitle}</h3>
-              <p className="text-gray-600 mb-1">Borrow Date: {borrowing.borrowDate}</p>
-              {borrowing.returnDate && <p className="text-gray-600 mb-4">Return Date: {borrowing.returnDate}</p>}
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">{borrowing.bookTitle}</h3>
+              <p className="mb-1 text-gray-600">Borrow Date: {borrowing.borrowDate}</p>
+              {borrowing.returnDate && <p className="mb-4 text-gray-600">Return Date: {borrowing.returnDate}</p>}
               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                 borrowing.returned
                   ? 'bg-green-100 text-green-800'
@@ -38,7 +26,7 @@ const Borrowings: React.FC<BorrowingsProps> = ({ borrowings, isLibrarian, onRetu
               {isLibrarian && !borrowing.returned && (
                 <button
                   onClick={() => onReturnBook(borrowing.id)}
-                  className="ml-2 bg-accent hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors mt-2"
+                  className="px-4 py-2 mt-2 ml-2 font-medium text-white transition-colors rounded-md bg-accent hover:bg-green-700"
                 >
                   Return Book
                 </button>
@@ -47,8 +35,8 @@ const Borrowings: React.FC<BorrowingsProps> = ({ borrowings, isLibrarian, onRetu
           ))}
         </div>
         {borrowings.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No borrowings yet.</p>
+          <div className="py-12 text-center">
+            <p className="text-lg text-gray-500">No borrowings yet.</p>
           </div>
         )}
       </div>

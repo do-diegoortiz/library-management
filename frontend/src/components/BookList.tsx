@@ -1,36 +1,8 @@
 import React, { useState } from 'react';
 import BookForm from './BookForm';
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  isbn: string;
-  available_copies: number;
-  total_copies: number;
-  genre?: string;
-}
-
-interface Borrowing {
-  id: number;
-  book_id: number;
-  bookTitle: string;
-  borrowDate: string;
-  returnDate?: string;
-  returned: boolean;
-}
-
-interface BookListProps {
-  books: Book[];
-  isLibrarian: boolean;
-  onCreateBook: (data: any) => Promise<void>;
-  onUpdateBook: (id: number, data: any) => Promise<void>;
-  onDeleteBook: (id: number) => Promise<void>;
-  onBorrowBook: (id: number) => Promise<void>;
-  borrowings: Borrowing[];
-  search: string;
-  setSearch: (search: string) => void;
-}
+import { Book } from '../interfaces/Book';
+import { Borrowing } from '../interfaces/Borrowing';
+import { BookListProps } from '../interfaces/ComponentProps';
 
 const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onBorrowBook, borrowings, search, setSearch }) => {
   const [showForm, setShowForm] = useState(false);
@@ -61,14 +33,14 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Available Books</h2>
           {isLibrarian && (
             <button
               onClick={handleAddBook}
-              className="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
+              className="px-4 py-2 font-medium text-white rounded-md bg-primary hover:bg-blue-700"
             >
               Add Book
             </button>
@@ -84,28 +56,28 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
             <div
               key={book.id}
-              className="bg-white shadow-md rounded-lg overflow-hidden p-6 hover:shadow-lg transition-shadow duration-300"
+              className="p-6 overflow-hidden transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-lg"
             >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{book.title}</h3>
-              <p className="text-gray-600 mb-1">Author: {book.author}</p>
-              <p className="text-gray-600 mb-1">Genre: {book.genre || 'N/A'}</p>
-              <p className="text-gray-600 mb-1">ISBN: {book.isbn}</p>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">{book.title}</h3>
+              <p className="mb-1 text-gray-600">Author: {book.author}</p>
+              <p className="mb-1 text-gray-600">Genre: {book.genre || 'N/A'}</p>
+              <p className="mb-1 text-gray-600">ISBN: {book.isbn}</p>
               <p className="text-gray-600">Available Copies: {book.available_copies}</p>
               {isLibrarian && (
-                <div className="mt-4 flex space-x-2">
+                <div className="flex mt-4 space-x-2">
                   <button
                     onClick={() => handleEditBook(book)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                    className="px-3 py-1 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-600"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDeleteBook(book)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                    className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
@@ -115,7 +87,7 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
                 <div className="mt-4">
                   <button
                     onClick={() => onBorrowBook(book.id)}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                    className="px-3 py-1 text-sm text-white bg-green-500 rounded hover:bg-green-600"
                   >
                     Borrow
                   </button>
@@ -125,8 +97,8 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
           ))}
         </div>
         {books.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No books available.</p>
+          <div className="py-12 text-center">
+            <p className="text-lg text-gray-500">No books available.</p>
           </div>
         )}
       </div>

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-interface LoginProps {
-  onSwitchToSignup: () => void;
-}
+import { LoginProps } from '../interfaces/ComponentProps';
 
 const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
   const [email, setEmail] = useState(() => localStorage.getItem('loginEmail') || '');
@@ -30,10 +27,10 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
-      <div className="max-w-md w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Login to Library Management</h2>
+    <div className="flex items-center justify-center min-h-screen py-8 bg-gray-50">
+      <div className="w-full max-w-md px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">Login to Library Management</h2>
           {error && (
             <p style={{ color: 'red', fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>
               Error: {error}
@@ -41,7 +38,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
@@ -49,13 +46,13 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
                 id="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); localStorage.setItem('loginEmail', e.target.value); }}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter your email"
                 required
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
@@ -63,7 +60,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter your password"
                 required
               />
@@ -71,19 +68,19 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
             </div>
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              className="w-full px-4 py-2 font-medium text-white transition-colors rounded-md bg-primary hover:bg-blue-700"
             >
               Sign in
             </button>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-lg font-medium text-gray-700 mb-2">Demo Users:</p>
-            <div className="text-base text-gray-600 space-y-1">
+            <p className="mb-2 text-lg font-medium text-gray-700">Demo Users:</p>
+            <div className="space-y-1 text-base text-gray-600">
               <div className="flex items-center justify-center space-x-2">
                 <span>Librarian: librarian@example.com</span>
                 <button
                   onClick={() => copyToClipboard('librarian@example.com')}
-                  className="p-1 bg-gray-200 hover:bg-gray-300 rounded"
+                  className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                   title="Copy email"
                 >
                   <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="icon">
@@ -95,7 +92,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
                 <span>Member: member@example.com</span>
                 <button
                   onClick={() => copyToClipboard('member@example.com')}
-                  className="p-1 bg-gray-200 hover:bg-gray-300 rounded"
+                  className="p-1 bg-gray-200 rounded hover:bg-gray-300"
                   title="Copy email"
                 >
                   <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="icon">
@@ -110,7 +107,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
               Don't have an account?{' '}
               <button
                 onClick={onSwitchToSignup}
-                className="text-primary hover:text-blue-700 font-medium"
+                className="font-medium text-primary hover:text-blue-700"
               >
                 Sign up
               </button>

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-interface SignupProps {
-  onSwitchToLogin: () => void;
-}
+import { SignupProps } from '../interfaces/ComponentProps';
 
 const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState('');
@@ -28,13 +25,13 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
-      <div className="max-w-md w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Sign Up for Library Management</h2>
+    <div className="flex items-center justify-center min-h-screen py-8 bg-gray-50">
+      <div className="w-full max-w-md px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <h2 className="mb-6 text-2xl font-bold text-center text-gray-900">Sign Up for Library Management</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
@@ -42,13 +39,13 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter your email"
                 required
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
@@ -56,13 +53,13 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter your password"
                 required
               />
             </div>
             <div>
-              <label htmlFor="passwordConfirmation" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="passwordConfirmation" className="block mb-2 text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <input
@@ -70,20 +67,20 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
                 id="passwordConfirmation"
                 value={passwordConfirmation}
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Confirm your password"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              className="w-full px-4 py-2 font-medium text-white transition-colors rounded-md bg-primary hover:bg-blue-700"
             >
               Sign Up
             </button>
           </form>
           {error && (
-            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <div className="p-3 mt-4 text-red-700 bg-red-100 border border-red-400 rounded">
               {error}
             </div>
           )}
@@ -92,7 +89,7 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
               Already have an account?{' '}
               <button
                 onClick={onSwitchToLogin}
-                className="text-primary hover:text-blue-700 font-medium"
+                className="font-medium text-primary hover:text-blue-700"
               >
                 Sign in
               </button>
