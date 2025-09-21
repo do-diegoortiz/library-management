@@ -12,12 +12,11 @@ class Api::V1::DashboardsController < ApplicationController
       }
     else
       dashboard_data = {
-        borrowed_books: current_user.books,
-        overdue_books: current_user.borrowings.overdue,
-        total_books: Book.count
+        borrowed_books: current_user.borrowings.where(returned: false).includes(:book),
+        overdue_books: current_user.borrowings.overdue.includes(:book)
       }
     end
 
-    render json: dashboard_data, status: :ok
+    render json: dashboard_data, include: [:book], status: :ok
   end
 end
