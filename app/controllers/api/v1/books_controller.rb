@@ -17,7 +17,6 @@ class Api::V1::BooksController < ApplicationController
 
   def create
     book = Book.new(book_params)
-    book.user = current_user if current_user.librarian?
 
     if book.save
       render json: book, status: :created
