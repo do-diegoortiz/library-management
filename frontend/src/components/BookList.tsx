@@ -68,6 +68,7 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
             placeholder="Search books by title, author, or genre..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            autoFocus
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
