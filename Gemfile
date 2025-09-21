@@ -48,7 +48,7 @@ end
 
 gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.12.1"
-gem "jwt", "~> 2.8"
+gem "jwt", "~> 3.1"
 gem "rspec-rails", "~> 7.1"
 gem "factory_bot_rails", "~> 6.4"
 gem "faker", "~> 3.4"
