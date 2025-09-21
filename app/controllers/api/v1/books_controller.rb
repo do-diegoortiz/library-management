@@ -6,13 +6,7 @@ class Api::V1::BooksController < ApplicationController
   def index
     books = Book.all
     if params[:search]
-      if params[:search_type] == "title"
-        books = books.search_by_title(params[:search])
-      elsif params[:search_type] == "author"
-        books = books.search_by_author(params[:search])
-      elsif params[:search_type] == "genre"
-        books = books.search_by_genre(params[:search])
-      end
+      books = books.where("title ILIKE ? OR author ILIKE ? OR genre ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
     end
     render json: books, status: :ok
   end

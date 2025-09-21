@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import BookList from './components/BookList';
@@ -25,6 +25,22 @@ interface Borrowing {
 }
 
 const API_BASE = 'http://localhost:3000/api/v1';
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 async function apiCall(endpoint: string, options: RequestInit = {}) {
   const url = `${API_BASE}${endpoint}`;
@@ -54,6 +70,17 @@ function App() {
   const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
   const [borrowingsLoading, setBorrowingsLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [search, setSearch] = useState(() => localStorage.getItem('bookSearch') || '');
+
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    localStorage.setItem('bookSearch', search);
+  }, [search]);
+
+  useEffect(() => {
+    fetchBooks(debouncedSearch);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (currentView === 'books' && user) {
@@ -67,12 +94,11 @@ function App() {
     }
   }, [currentView, user]);
 
-  const fetchBooks = async (search?: string, searchType?: string) => {
+  const fetchBooks = useCallback(async (search?: string) => {
     setBooksLoading(true);
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (searchType) params.append('search_type', searchType);
       const url = `/books${params.toString() ? `?${params.toString()}` : ''}`;
       const data = await apiCall(url);
       setBooks(data);
@@ -81,7 +107,7 @@ function App() {
     } finally {
       setBooksLoading(false);
     }
-  };
+  }, []);
 
   const fetchBorrowings = async () => {
     setBorrowingsLoading(true);
@@ -125,9 +151,9 @@ function App() {
     await fetchBooks(); // Refresh
   };
 
-  const onSearchBook = (search: string, searchType: string) => {
-    fetchBooks(search, searchType);
-  };
+  const onSearchBook = useCallback((search: string) => {
+    fetchBooks(search);
+  }, [fetchBooks]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50">Loading...</div>;
   if (!user) {
@@ -145,7 +171,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} onSearch={onSearchBook} />
+          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} search={search} setSearch={setSearch} />
         );
       case 'borrowings':
         return borrowingsLoading ? (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import BookForm from './BookForm';
 
 interface Book {
@@ -16,14 +16,13 @@ interface BookListProps {
   onCreateBook: (data: any) => Promise<void>;
   onUpdateBook: (id: number, data: any) => Promise<void>;
   onDeleteBook: (id: number) => Promise<void>;
-  onSearch: (search: string, searchType: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
 }
 
-const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onSearch }) => {
+const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, search, setSearch }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
-  const [search, setSearch] = useState('');
-  const [searchType, setSearchType] = useState('title');
 
   const handleAddBook = () => {
     setEditingBook(null);
@@ -63,29 +62,14 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
             </button>
           )}
         </div>
-        <div className="mb-6 flex space-x-4">
-          <select
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="genre">Genre</option>
-          </select>
+        <div className="mb-6">
           <input
             type="text"
-            placeholder="Search books..."
+            placeholder="Search books by title, author, or genre..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <button
-            onClick={() => onSearch(search, searchType)}
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md"
-          >
-            Search
-          </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => (
