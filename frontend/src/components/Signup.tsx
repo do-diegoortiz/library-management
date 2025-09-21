@@ -9,19 +9,21 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [error, setError] = useState('');
   const { signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     if (password !== passwordConfirmation) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
     try {
       await signup(email, password, passwordConfirmation);
     } catch (error) {
       console.error('Signup failed:', error);
-      // Optionally show error message
+      setError(error instanceof Error ? error.message : 'Signup failed');
     }
   };
 
@@ -80,6 +82,11 @@ const Signup: React.FC<SignupProps> = ({ onSwitchToLogin }) => {
               Sign Up
             </button>
           </form>
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}

@@ -10,6 +10,10 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
   const [password, setPassword] = useState('');
   const { login } = useAuth();
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -62,10 +66,26 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
             </button>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 mb-2">Demo Users:</p>
-            <div className="text-xs text-gray-500 space-y-1">
-              <p>Librarian: librarian@example.com / password</p>
-              <p>Member: member@example.com / password</p>
+            <p className="text-base font-medium text-gray-700 mb-2">Demo Users:</p>
+            <div className="text-sm text-gray-600 space-y-1">
+              <div className="flex items-center justify-center space-x-2">
+                <span>Librarian: librarian@example.com / password</span>
+                <button
+                  onClick={() => copyToClipboard('librarian@example.com')}
+                  className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                  Copy Email
+                </button>
+              </div>
+              <div className="flex items-center justify-center space-x-2">
+                <span>Member: member@example.com / password</span>
+                <button
+                  onClick={() => copyToClipboard('member@example.com')}
+                  className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                  Copy Email
+                </button>
+              </div>
             </div>
           </div>
           <div className="mt-4 text-center">
