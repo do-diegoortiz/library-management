@@ -13,7 +13,8 @@ class Api::V1::DashboardsController < ApplicationController
     else
       dashboard_data = {
         borrowed_books: current_user.books,
-        overdue_books: current_user.borrowings.overdue
+        overdue_books: current_user.borrowings.overdue,
+        total_books: Book.count
       }
     end
 
