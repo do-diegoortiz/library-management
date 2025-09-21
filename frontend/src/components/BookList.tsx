@@ -53,12 +53,14 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Available Books</h2>
-          <button
-            onClick={handleAddBook}
-            className="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
-          >
-            Add Book
-          </button>
+          {isLibrarian && (
+            <button
+              onClick={handleAddBook}
+              className="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
+            >
+              Add Book
+            </button>
+          )}
         </div>
         <div className="mb-6">
           <input
@@ -81,20 +83,22 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
               <p className="text-gray-600 mb-1">Genre: {book.genre || 'N/A'}</p>
               <p className="text-gray-600 mb-1">ISBN: {book.isbn}</p>
               <p className="text-gray-600">Available Copies: {book.available_copies}</p>
-              <div className="mt-4 flex space-x-2">
-                <button
-                  onClick={() => handleEditBook(book)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteBook(book)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                >
-                  Delete
-                </button>
-              </div>
+              {isLibrarian && (
+                <div className="mt-4 flex space-x-2">
+                  <button
+                    onClick={() => handleEditBook(book)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteBook(book)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
