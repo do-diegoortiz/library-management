@@ -6,8 +6,9 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => localStorage.getItem('loginEmail') || '');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(() => localStorage.getItem('loginError') || '');
   const { login } = useAuth();
 
   const copyToClipboard = (text: string) => {
@@ -16,11 +17,15 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    localStorage.removeItem('loginError');
     try {
       await login(email, password);
     } catch (error) {
       console.error('Login failed:', error);
-      // Optionally show error message
+      const message = error instanceof Error ? error.message : 'Login failed';
+      setError(message);
+      localStorage.setItem('loginError', message);
     }
   };
 
@@ -29,6 +34,11 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
       <div className="max-w-md w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Login to Library Management</h2>
+          {error && (
+            <p style={{ color: 'red', fontSize: '18px', fontWeight: 'bold', marginBottom: '16px' }}>
+              Error: {error}
+            </p>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -38,7 +48,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); localStorage.setItem('loginEmail', e.target.value); }}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="Enter your email"
                 required
@@ -57,6 +67,7 @@ const Login: React.FC<LoginProps> = ({ onSwitchToSignup }) => {
                 placeholder="Enter your password"
                 required
               />
+              <p className="mt-1 text-xs text-gray-500">Demo users can use "password" as the password</p>
             </div>
             <button
               type="submit"

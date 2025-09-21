@@ -51,6 +51,8 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
       const errorData = await response.json();
       if (errorData.errors) {
         errorMessage = errorData.errors.join(', ');
+      } else if (errorData.error) {
+        errorMessage = errorData.error;
       }
     } catch (e) {
       // Ignore if can't parse JSON
@@ -77,7 +79,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    setLoading(true);
     try {
       const data = await apiCall('/auth/login', {
         method: 'POST',
@@ -90,13 +91,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const signup = async (email: string, password: string, passwordConfirmation: string) => {
-    setLoading(true);
     try {
       const data = await apiCall('/auth/signup', {
         method: 'POST',
@@ -109,8 +107,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Signup failed:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
