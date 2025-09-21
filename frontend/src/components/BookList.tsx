@@ -17,11 +17,12 @@ interface BookListProps {
   onCreateBook: (data: any) => Promise<void>;
   onUpdateBook: (id: number, data: any) => Promise<void>;
   onDeleteBook: (id: number) => Promise<void>;
+  onBorrowBook: (id: number) => Promise<void>;
   search: string;
   setSearch: (search: string) => void;
 }
 
-const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, search, setSearch }) => {
+const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, onUpdateBook, onDeleteBook, onBorrowBook, search, setSearch }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
@@ -97,6 +98,16 @@ const BookList: React.FC<BookListProps> = ({ books, isLibrarian, onCreateBook, o
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
                   >
                     Delete
+                  </button>
+                </div>
+              )}
+              {!isLibrarian && book.available_copies > 0 && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => onBorrowBook(book.id)}
+                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Borrow
                   </button>
                 </div>
               )}

@@ -16,21 +16,29 @@ class Api::V1::BorrowingsController < ApplicationController
   end
 
   def create
-    borrowing = Borrowing.new(borrowing_params)
-    borrowing.user = current_user
+    if current_user.member?
+      borrowing = Borrowing.new(borrowing_params)
+      borrowing.user = current_user
 
-    if borrowing.save
-      render json: borrowing, include: :book, status: :created
+      if borrowing.save
+        render json: borrowing, include: :book, status: :created
+      else
+        render json: { errors: borrowing.errors.full_messages }, status: :unprocessable_content
+      end
     else
-      render json: { errors: borrowing.errors.full_messages }, status: :unprocessable_content
+      render json: { error: "Only members can borrow books" }, status: :forbidden
     end
   end
 
   def update
-    if current_user.librarian? && @borrowing.update(returned: true, returned_date: Date.today)
-      render json: @borrowing, include: :book, status: :ok
+    if current_user.librarian?
+      if @borrowing.update(returned: true, returned_date: Date.today)
+        render json: @borrowing, include: :book, status: :ok
+      else
+        render json: { errors: @borrowing.errors.full_messages }, status: :unprocessable_content
+      end
     else
-      render json: { errors: @borrowing.errors.full_messages }, status: :unprocessable_content
+      render json: { error: "Not authorized" }, status: :not_found
     end
   end
 

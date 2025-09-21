@@ -160,6 +160,24 @@ function App() {
     await fetchBooks(); // Refresh
   };
 
+  const borrowBook = async (bookId: number) => {
+    const borrowDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    await apiCall('/borrowings', {
+      method: 'POST',
+      body: JSON.stringify({ borrowing: { book_id: bookId, borrow_date: borrowDate } }),
+    });
+    await fetchBooks(); // Refresh available copies
+  };
+
+  const returnBook = async (borrowingId: number) => {
+    await apiCall(`/borrowings/${borrowingId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ borrowing: { returned: true } }),
+    });
+    await fetchBooks(); // Refresh available copies
+    await fetchBorrowings(); // Refresh borrowings list
+  };
+
   const onSearchBook = useCallback((search: string) => {
     fetchBooks(search);
   }, [fetchBooks]);
@@ -180,7 +198,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} search={search} setSearch={setSearch} />
+          <BookList books={books} isLibrarian={isLibrarian} onCreateBook={createBook} onUpdateBook={updateBook} onDeleteBook={deleteBook} onBorrowBook={borrowBook} search={search} setSearch={setSearch} />
         );
       case 'borrowings':
         return borrowingsLoading ? (
@@ -191,7 +209,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <Borrowings borrowings={borrowings} />
+          <Borrowings borrowings={borrowings} isLibrarian={isLibrarian} onReturnBook={returnBook} />
         );
       default:
         return <Dashboard />;

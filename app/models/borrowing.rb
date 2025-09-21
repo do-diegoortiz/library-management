@@ -4,6 +4,7 @@ class Borrowing < ApplicationRecord
 
   validates :user_id, :book_id, presence: true
   validates :returned, inclusion: { in: [ true, false ] }
+  validates :returned_date, presence: true, if: :returned?
 
   validate :book_available
   validate :not_already_borrowed

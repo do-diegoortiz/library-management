@@ -10,9 +10,11 @@ interface Borrowing {
 
 interface BorrowingsProps {
   borrowings: Borrowing[];
+  isLibrarian: boolean;
+  onReturnBook: (id: number) => Promise<void>;
 }
 
-const Borrowings: React.FC<BorrowingsProps> = ({ borrowings }) => {
+const Borrowings: React.FC<BorrowingsProps> = ({ borrowings, isLibrarian, onReturnBook }) => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,8 +35,11 @@ const Borrowings: React.FC<BorrowingsProps> = ({ borrowings }) => {
               }`}>
                 {borrowing.returned ? 'Returned' : 'Borrowed'}
               </span>
-              {!borrowing.returned && (
-                <button className="ml-2 bg-accent hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors mt-2">
+              {isLibrarian && !borrowing.returned && (
+                <button
+                  onClick={() => onReturnBook(borrowing.id)}
+                  className="ml-2 bg-accent hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors mt-2"
+                >
                   Return Book
                 </button>
               )}
