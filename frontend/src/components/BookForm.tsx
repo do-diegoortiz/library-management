@@ -6,6 +6,7 @@ interface Book {
   author: string;
   isbn: string;
   available_copies: number;
+  total_copies: number;
   genre?: string;
 }
 
@@ -42,7 +43,7 @@ const BookForm: React.FC<BookFormProps> = ({ isOpen, onClose, onSubmit, initialB
         author: initialBook.author,
         genre: initialBook.genre || '',
         isbn: initialBook.isbn,
-        total_copies: initialBook.available_copies, // Assuming total_copies is available_copies for edit
+        total_copies: initialBook.total_copies,
       });
     } else {
       setFormData({

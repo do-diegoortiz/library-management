@@ -12,8 +12,8 @@ interface Book {
   author: string;
   isbn: string;
   available_copies: number;
+  total_copies: number;
   genre?: string;
-  total_copies?: number;
 }
 
 interface Borrowing {
